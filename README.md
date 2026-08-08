@@ -2,7 +2,7 @@
 
 Інтерактивна презентація-повторення з мережевих основ для аналітика SOC Level 1 — підготовка до сертифікації TryHackMe SAL1 та технічних співбесід.
 
-**Дивитись:** https://vladtaff-pro.github.io/networking-for-soc/
+**Дивитись:** https://vladtaff-sec.github.io/networking-for-soc/
 
 ## Що всередині
 
