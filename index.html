@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Мережі для кібербезпеки — повне повторення</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0b0f16;
+    --bg2:#0f1520;
+    --surface:#151c28;
+    --surface2:#1b2433;
+    --line:#293347;
+    --txt:#e8eef7;
+    --muted:#94a3b8;
+    --blue:#5ea8ff;
+    --cyan:#3fd0d4;
+    --green:#4ade80;
+    --amber:#fbbf24;
+    --red:#fb7185;
+    --violet:#c084fc;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  html,body{height:100%;overflow:hidden}
+  body{
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--txt);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+
+  /* ---------- deck: horizontal scroll ---------- */
+  .deck{
+    display:flex;
+    height:100dvh;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;
+    scrollbar-width:none;
+  }
+  .deck::-webkit-scrollbar{display:none}
+
+  .slide{
+    flex:0 0 100%;
+    width:100%;
+    height:100dvh;
+    scroll-snap-align:center;
+    scroll-snap-stop:always;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:clamp(20px,4vw,56px) clamp(16px,4vw,72px) clamp(76px,9vh,104px);
+    position:relative;
+    background:
+      radial-gradient(1100px 620px at 88% -8%, rgba(94,168,255,.10), transparent 62%),
+      radial-gradient(820px 520px at -6% 106%, rgba(192,132,252,.09), transparent 60%),
+      linear-gradient(168deg,var(--bg) 0%, var(--bg2) 100%);
+    scrollbar-width:thin;
+    scrollbar-color:var(--line) transparent;
+    overscroll-behavior-y:contain;
+  }
+  .slide::-webkit-scrollbar{width:6px}
+  .slide::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+
+  .inner{max-width:1180px;margin:0 auto;width:100%}
+
+  /* ---------- typography ---------- */
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--mono);font-size:clamp(10px,1.5vw,12px);
+    letter-spacing:.16em;text-transform:uppercase;
+    color:var(--cyan);
+    border:1px solid rgba(63,208,212,.28);
+    background:rgba(63,208,212,.07);
+    padding:5px 11px;border-radius:99px;margin-bottom:14px;
+  }
+  .kicker.focus{color:var(--amber);border-color:rgba(251,191,36,.32);background:rgba(251,191,36,.08)}
+  h1{
+    font-size:clamp(30px,6.2vw,62px);line-height:1.04;letter-spacing:-.025em;font-weight:800;
+    background:linear-gradient(120deg,#fff 8%,var(--blue) 55%,var(--cyan) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  h2{
+    font-size:clamp(21px,3.6vw,36px);line-height:1.14;letter-spacing:-.02em;font-weight:750;
+    margin-bottom:clamp(14px,2.2vh,22px);
+  }
+  h3{font-size:clamp(14px,1.9vw,17px);font-weight:700;margin-bottom:9px;letter-spacing:-.01em}
+  p{font-size:clamp(13.5px,1.75vw,16px);color:var(--muted)}
+  .lead{font-size:clamp(15px,2.2vw,20px);color:#c7d3e3;max-width:70ch}
+  b,strong{color:#fff;font-weight:650}
+  code{
+    font-family:var(--mono);font-size:.88em;
+    background:rgba(94,168,255,.12);color:#a9cdff;
+    padding:1.5px 6px;border-radius:5px;border:1px solid rgba(94,168,255,.16);
+    white-space:nowrap;
+  }
+
+  /* ---------- layout helpers ---------- */
+  .grid{display:grid;gap:clamp(10px,1.5vw,16px)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+  .card{
+    background:linear-gradient(160deg,var(--surface),var(--surface2));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:clamp(12px,1.8vw,20px);
+  }
+  .card p{font-size:clamp(12.5px,1.6vw,14.5px)}
+  .card.blue{border-color:rgba(94,168,255,.34);background:linear-gradient(160deg,rgba(94,168,255,.10),rgba(94,168,255,.03))}
+  .card.green{border-color:rgba(74,222,128,.32);background:linear-gradient(160deg,rgba(74,222,128,.10),rgba(74,222,128,.03))}
+  .card.amber{border-color:rgba(251,191,36,.34);background:linear-gradient(160deg,rgba(251,191,36,.11),rgba(251,191,36,.03))}
+  .card.red{border-color:rgba(251,113,133,.32);background:linear-gradient(160deg,rgba(251,113,133,.10),rgba(251,113,133,.03))}
+  .card.violet{border-color:rgba(192,132,252,.32);background:linear-gradient(160deg,rgba(192,132,252,.10),rgba(192,132,252,.03))}
+
+  .tag{
+    display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;
+    padding:2.5px 8px;border-radius:6px;letter-spacing:.03em;
+  }
+  .t-blue{background:rgba(94,168,255,.16);color:var(--blue)}
+  .t-green{background:rgba(74,222,128,.16);color:var(--green)}
+  .t-amber{background:rgba(251,191,36,.16);color:var(--amber)}
+  .t-red{background:rgba(251,113,133,.16);color:var(--red)}
+  .t-violet{background:rgba(192,132,252,.16);color:var(--violet)}
+  .t-cyan{background:rgba(63,208,212,.16);color:var(--cyan)}
+
+  /* ---------- tables ---------- */
+  .tbl{width:100%;border-collapse:collapse;font-size:clamp(11.5px,1.55vw,14px)}
+  .tbl th{
+    text-align:left;font-family:var(--mono);font-size:clamp(9.5px,1.2vw,11px);
+    text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+    padding:8px 10px;border-bottom:1px solid var(--line);font-weight:600;
+  }
+  .tbl td{padding:8px 10px;border-bottom:1px solid rgba(41,51,71,.55);vertical-align:top}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl td:first-child{font-family:var(--mono);color:#fff;font-weight:600;white-space:nowrap}
+  .tbl .dim{color:var(--muted)}
+  .scroll-x{
+    overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px;
+    overscroll-behavior-x:contain;   /* свайп по таблиці не перегортає слайд */
+    scrollbar-width:thin;scrollbar-color:var(--line) transparent;
+  }
+  .scroll-x::-webkit-scrollbar{height:5px}
+  .scroll-x::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+  .scroll-x .tbl{min-width:440px}
+
+  /* ---------- code block ---------- */
+  pre{
+    font-family:var(--mono);font-size:clamp(11px,1.5vw,13.5px);
+    background:#080c13;border:1px solid var(--line);border-radius:12px;
+    padding:clamp(11px,1.6vw,16px);overflow-x:auto;line-height:1.75;color:#cbd5e1;
+  }
+  pre .c{color:#64748b}
+  pre .k{color:var(--cyan)}
+  pre .s{color:var(--green)}
+  pre .n{color:var(--amber)}
+
+  /* ---------- OSI stack ---------- */
+  .osi{display:flex;flex-direction:column;gap:5px}
+  .osi-row{
+    display:grid;grid-template-columns:38px 1.05fr 1.5fr;gap:10px;align-items:center;
+    background:var(--surface);border:1px solid var(--line);border-left-width:3px;
+    border-radius:9px;padding:8px 11px;font-size:clamp(11.5px,1.55vw,14px);
+  }
+  .osi-row .lv{font-family:var(--mono);font-weight:700;color:#fff;font-size:clamp(11px,1.4vw,13px)}
+  .osi-row .nm{font-weight:650;color:#fff}
+  .osi-row .ds{color:var(--muted);font-size:clamp(10.5px,1.4vw,13px)}
+  @media(max-width:640px){
+    .osi-row{grid-template-columns:30px 1fr;row-gap:2px}
+    .osi-row .ds{grid-column:2}
+  }
+
+  /* ---------- flow / steps ---------- */
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+  .step{
+    flex:1 1 150px;background:var(--surface);border:1px solid var(--line);
+    border-radius:11px;padding:11px 13px;position:relative;
+  }
+  .step .num{
+    font-family:var(--mono);font-size:10px;color:var(--cyan);
+    letter-spacing:.12em;font-weight:700;display:block;margin-bottom:5px;
+  }
+  .step h3{font-size:clamp(12.5px,1.7vw,15px);margin-bottom:4px}
+  .step p{font-size:clamp(11px,1.45vw,13px)}
+
+  ul.list{list-style:none;display:flex;flex-direction:column;gap:7px}
+  ul.list li{
+    position:relative;padding-left:19px;
+    font-size:clamp(12.5px,1.65vw,14.5px);color:#c3cfe0;
+  }
+  ul.list li::before{
+    content:"";position:absolute;left:2px;top:.58em;
+    width:6px;height:6px;border-radius:2px;background:var(--blue);
+  }
+  ul.list.g li::before{background:var(--green)}
+  ul.list.a li::before{background:var(--amber)}
+  ul.list.r li::before{background:var(--red)}
+
+  .note{
+    border-left:3px solid var(--amber);
+    background:rgba(251,191,36,.07);
+    padding:10px 14px;border-radius:0 10px 10px 0;
+    font-size:clamp(12.5px,1.65vw,14.5px);color:#e2d3ae;
+  }
+  .note.blue{border-color:var(--blue);background:rgba(94,168,255,.07);color:#c3ddff}
+  .note.red{border-color:var(--red);background:rgba(251,113,133,.07);color:#ffd0d8}
+  .note.green{border-color:var(--green);background:rgba(74,222,128,.07);color:#c6f2d6}
+
+  .mt{margin-top:clamp(10px,1.6vh,18px)}
+  .mt2{margin-top:clamp(16px,2.6vh,28px)}
+
+  /* ---------- cover ---------- */
+  .cover{display:flex;flex-direction:column;justify-content:center;min-height:100%}
+  .cover-meta{
+    display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(22px,3.5vh,34px);
+  }
+  .chip{
+    font-family:var(--mono);font-size:clamp(10.5px,1.4vw,12.5px);
+    border:1px solid var(--line);background:var(--surface);
+    padding:7px 13px;border-radius:99px;color:var(--muted);
+  }
+  .chip b{color:var(--cyan);font-weight:600}
+
+  /* ---------- HUD ---------- */
+  .hud{
+    position:fixed;left:0;right:0;bottom:0;height:60px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;padding:0 clamp(12px,3vw,28px);
+    background:linear-gradient(to top,rgba(8,12,19,.96),rgba(8,12,19,.72) 62%,transparent);
+    backdrop-filter:blur(10px);pointer-events:none;z-index:50;
+  }
+  .hud > *{pointer-events:auto}
+  .dots{display:flex;gap:5px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:60%}
+  .dots::-webkit-scrollbar{display:none}
+  .dot{
+    width:7px;height:7px;border-radius:99px;background:var(--line);
+    border:none;cursor:pointer;flex:0 0 auto;transition:all .22s;padding:0;
+  }
+  .dot.on{background:var(--cyan);width:20px}
+  .navbtns{display:flex;gap:7px;align-items:center}
+  .nb{
+    width:34px;height:34px;border-radius:9px;border:1px solid var(--line);
+    background:var(--surface);color:var(--txt);font-size:15px;cursor:pointer;
+    display:grid;place-items:center;transition:all .16s;
+  }
+  .nb:hover{border-color:var(--cyan);color:var(--cyan)}
+  .nb:disabled{opacity:.3;cursor:default}
+  .counter{
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    min-width:54px;text-align:right;
+  }
+  .counter b{color:#fff}
+  .bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan));z-index:60;transition:width .18s}
+
+  .hint{
+    position:fixed;bottom:68px;left:50%;transform:translateX(-50%);
+    font-family:var(--mono);font-size:11px;color:var(--muted);
+    background:rgba(21,28,40,.9);border:1px solid var(--line);
+    padding:6px 13px;border-radius:99px;z-index:55;
+    animation:fade 6s forwards;
+  }
+  @keyframes fade{0%,72%{opacity:1}100%{opacity:0;visibility:hidden}}
+</style>
+</head>
+<body>
+
+<div class="bar" id="bar"></div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 COVER -->
+  <section class="slide">
+    <div class="inner cover">
+      <span class="kicker">Повторення · SOC Level 1 · SAL1</span>
+      <h1>Мережі<br>для кібербезпеки</h1>
+      <p class="lead mt">Усе, що аналітик SOC мусить знати про мережі — від моделі OSI до виявлення C2-каналів у трафіку. Зібрано під іспит SAL1 і технічні співбесіди рівня Junior.</p>
+      <div class="cover-meta">
+        <span class="chip"><b>25</b> слайдів</span>
+        <span class="chip"><b>←→</b> або свайп</span>
+        <span class="chip">Позначка <b>ФОКУС</b> — пріоритет №1</span>
+      </div>
+      <div class="note blue mt2">Слайди з жовтою позначкою <b>ФОКУС</b> — це теми, які на перевірці дали найбільше помилок. Починай повторення саме з них.</div>
+    </div>
+  </section>
+
+  <!-- 2 MAP -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Навігація</span>
+      <h2>Мапа тем</h2>
+      <div class="grid g3">
+        <div class="card blue">
+          <span class="tag t-blue">ФУНДАМЕНТ</span>
+          <ul class="list mt">
+            <li>Модель OSI · 7 рівнів</li>
+            <li>TCP/IP та інкапсуляція</li>
+            <li>TCP vs UDP</li>
+            <li>Handshake і прапорці</li>
+            <li>open / closed / filtered</li>
+          </ul>
+        </div>
+        <div class="card violet">
+          <span class="tag t-violet">АДРЕСАЦІЯ</span>
+          <ul class="list mt">
+            <li>Публічні та приватні IP</li>
+            <li>Субнетинг і CIDR</li>
+            <li>Спеціальні адреси</li>
+            <li>TTL і traceroute</li>
+            <li>Порти напам'ять</li>
+          </ul>
+        </div>
+        <div class="card green">
+          <span class="tag t-green">ПРОТОКОЛИ</span>
+          <ul class="list mt">
+            <li>ARP і ARP spoofing</li>
+            <li>DHCP · DORA</li>
+            <li>NAT</li>
+            <li>DNS: робота і записи</li>
+            <li>DNS в атаках</li>
+          </ul>
+        </div>
+        <div class="card amber">
+          <span class="tag t-amber">ВЕБ І ШИФРУВАННЯ</span>
+          <ul class="list mt">
+            <li>Шлях запиту: URL → сторінка</li>
+            <li>TLS handshake</li>
+            <li>Ланцюжок довіри та CA</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="tag t-cyan">ІНСТРУМЕНТИ</span>
+          <ul class="list mt">
+            <li>Пристрої: switch, router, FW</li>
+            <li>Proxy, IDS, IPS</li>
+            <li>Wireshark: фільтри</li>
+            <li>tcpdump і Nmap</li>
+          </ul>
+        </div>
+        <div class="card red">
+          <span class="tag t-red">SOC-ПРАКТИКА</span>
+          <ul class="list mt">
+            <li>Виявлення атак у трафіку</li>
+            <li>Джерела мережевих логів</li>
+            <li>Шпаргалка напам'ять</li>
+            <li>План на 3 тижні</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 OSI -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Фундамент · 01</span>
+      <h2>Модель OSI — і що ламається на кожному рівні</h2>
+      <div class="osi">
+        <div class="osi-row" style="border-left-color:var(--violet)">
+          <span class="lv">L7</span><span class="nm">Application · HTTP, DNS, SMTP, FTP</span>
+          <span class="ds">Фішинг, SQLi, XSS, зловживання API</span>
+        </div>
+        <div class="osi-row" style="border-left-color:var(--violet)">
+          <span class="lv">L6</span><span class="nm">Presentation · TLS, шифрування, кодування</span>
+          <span class="ds">Слабкі шифри, підроблені сертифікати</span>
+        </div>
+        <div class="osi-row" style="border-left-color:var(--violet)">
+          <span class="lv">L5</span><span class="nm">Session · сесії, NetBIOS, RPC</span>
+          <span class="ds">Викрадення сесій, session fixation</span>
+        </div>
+        <div class="osi-row" style="border-left-color:var(--blue)">
+          <span class="lv">L4</span><span class="nm">Transport · TCP, UDP · порти</span>
+          <span class="ds">Сканування портів, SYN flood</span>
+        </div>
+        <div class="osi-row" style="border-left-color:var(--cyan)">
+          <span class="lv">L3</span><span class="nm">Network · IP, ICMP, роутери</span>
+          <span class="ds">IP-спуфінг, ICMP-тунелі, DDoS</span>
+        </div>
+        <div class="osi-row" style="border-left-color:var(--green)">
+          <span class="lv">L2</span><span class="nm">Data Link · MAC, ARP, свічі, VLAN</span>
+          <span class="ds">ARP spoofing, MAC flooding, VLAN hopping</span>
+        </div>
+        <div class="osi-row" style="border-left-color:var(--amber)">
+          <span class="lv">L1</span><span class="nm">Physical · кабелі, радіо, сигнал</span>
+          <span class="ds">Фізичне врізання, глушіння, keylogger</span>
+        </div>
+      </div>
+      <div class="grid g2 mt">
+        <div class="note blue">Мнемоніка знизу вгору: <b>П</b>ро <b>К</b>ожну <b>М</b>ережу <b>Т</b>реба <b>С</b>казати <b>П</b>ару <b>З</b>слів — Physical, Data Link, Network, Transport, Session, Presentation, Application.</div>
+        <div class="note">На співбесіді питають не список, а <b>приклад для кожного рівня</b> і де він проявляється в інциденті. Вчи разом із колонкою атак.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 TCP/IP + encapsulation -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Фундамент · 02</span>
+      <h2>TCP/IP та інкапсуляція</h2>
+      <div class="grid g2">
+        <div>
+          <h3>Модель TCP/IP — те, що реально працює</h3>
+          <div class="scroll-x">
+          <table class="tbl">
+            <tr><th>TCP/IP</th><th>Відповідає OSI</th><th>Приклади</th></tr>
+            <tr><td>Application</td><td class="dim">L5–L7</td><td class="dim">HTTP, DNS, SMTP</td></tr>
+            <tr><td>Transport</td><td class="dim">L4</td><td class="dim">TCP, UDP</td></tr>
+            <tr><td>Internet</td><td class="dim">L3</td><td class="dim">IP, ICMP</td></tr>
+            <tr><td>Link</td><td class="dim">L1–L2</td><td class="dim">Ethernet, Wi-Fi, ARP</td></tr>
+          </table>
+          </div>
+          <div class="note blue mt">OSI — навчальна модель для розмови. TCP/IP — те, за чим реально ходять пакети.</div>
+        </div>
+        <div>
+          <h3>Інкапсуляція: як обростає пакет</h3>
+          <pre><span class="c">// дані йдуть згори вниз при відправці</span>
+<span class="k">Дані</span>                      застосунок
+  └─ <span class="k">Сегмент</span>            + TCP/UDP заголовок (порти)
+      └─ <span class="k">Пакет</span>          + IP заголовок (IP-адреси, TTL)
+          └─ <span class="k">Кадр</span>       + Ethernet заголовок (MAC)
+              └─ <span class="k">Біти</span>   у кабель / радіо</pre>
+          <div class="note mt">У Wireshark ти бачиш саме ці шари один в одному — розгортаєш кадр і йдеш углиб до даних. Розуміння інкапсуляції = вміння читати будь-який пакет.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 TCP vs UDP -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Фундамент · 03</span>
+      <h2>TCP vs UDP</h2>
+      <div class="scroll-x">
+      <table class="tbl">
+        <tr><th>Критерій</th><th>TCP</th><th>UDP</th></tr>
+        <tr><td>З'єднання</td><td>Встановлюється (handshake)</td><td class="dim">Немає, шле одразу</td></tr>
+        <tr><td>Надійність</td><td>Гарантія доставки, ретрансмісія</td><td class="dim">Без гарантій, втрати ігноруються</td></tr>
+        <tr><td>Порядок</td><td>Зберігається (sequence numbers)</td><td class="dim">Не гарантується</td></tr>
+        <tr><td>Швидкість</td><td>Повільніше, більше службових даних</td><td class="dim">Швидко, мінімум накладних</td></tr>
+        <tr><td>Заголовок</td><td>20+ байт</td><td class="dim">8 байт</td></tr>
+        <tr><td>Де</td><td>HTTP, HTTPS, SSH, SMB, RDP, пошта</td><td class="dim">DNS, DHCP, NTP, SNMP, VoIP, стріми</td></tr>
+      </table>
+      </div>
+      <div class="grid g2 mt2">
+        <div class="card amber">
+          <h3>Чому DNS-запит іде по UDP, а zone transfer по TCP?</h3>
+          <p class="mt">Звичайний запит крихітний — влазить в одну датаграму, і три пакети handshake заради 50 байт були б марнотратством. <b>Zone transfer (AXFR)</b> — це передача всієї бази записів зони: великий обсяг, де втрата шматка неприпустима, тому TCP.</p>
+        </div>
+        <div class="card red">
+          <h3>Чому це важливо для SOC</h3>
+          <p class="mt">UDP не має стану — тому його легко <b>спуфити</b> і використовувати для ампліфікації в DDoS (DNS, NTP, memcached). А відсутність handshake ускладнює атрибуцію джерела.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 HANDSHAKE + FLAGS -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker focus">Фундамент · 04 · ФОКУС</span>
+      <h2>Three-way handshake і прапорці TCP</h2>
+      <div class="flow">
+        <div class="step" style="border-color:rgba(94,168,255,.4)">
+          <span class="num">КРОК 1</span>
+          <h3>SYN →</h3>
+          <p>Клієнт: «хочу з'єднатись», надсилає свій sequence number.</p>
+        </div>
+        <div class="step" style="border-color:rgba(63,208,212,.4)">
+          <span class="num">КРОК 2</span>
+          <h3>← SYN/ACK</h3>
+          <p>Сервер: «згоден, і я теж хочу» — підтверджує й шле свій SEQ.</p>
+        </div>
+        <div class="step" style="border-color:rgba(74,222,128,.4)">
+          <span class="num">КРОК 3</span>
+          <h3>ACK →</h3>
+          <p>Клієнт підтверджує. З'єднання встановлено, летять дані.</p>
+        </div>
+      </div>
+      <div class="note red mt">Найчастіша помилка — переставити місцями кроки 2 і 3. Запам'ятай як діалог: <b>питання → відповідь із зустрічним питанням → підтвердження</b>. Розрив з'єднання окремо: <code>FIN → ACK → FIN → ACK</code>.</div>
+      <h3 class="mt2">Прапорці, які треба впізнавати в Wireshark</h3>
+      <div class="scroll-x">
+      <table class="tbl">
+        <tr><th>Прапорець</th><th>Значення</th><th>Що каже аналітику</th></tr>
+        <tr><td>SYN</td><td>Запит на з'єднання</td><td class="dim">Багато SYN без ACK → SYN flood або сканування</td></tr>
+        <tr><td>ACK</td><td>Підтвердження отримання</td><td class="dim">Нормальний обмін даними</td></tr>
+        <tr><td>FIN</td><td>Коректне завершення</td><td class="dim">FIN-скан — обхід простих фаєрволів</td></tr>
+        <tr><td>RST</td><td>Різкий розрив / відмова</td><td class="dim">Порт закритий або з'єднання скинуто</td></tr>
+        <tr><td>PSH</td><td>Віддати дані застосунку негайно</td><td class="dim">Інтерактивні сесії, часто в C2</td></tr>
+        <tr><td>URG</td><td>Термінові дані</td><td class="dim">Майже не використовується — привід придивитись</td></tr>
+      </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 open/closed/filtered -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker focus">Фундамент · 05 · ФОКУС</span>
+      <h2>Три відповіді на SYN: open, closed, filtered</h2>
+      <p class="lead">Це різниця, яку питають на кожній співбесіді — і саме вона відрізняє <code>closed</code> від <code>filtered</code> у Nmap.</p>
+      <div class="grid g3 mt2">
+        <div class="card green">
+          <span class="tag t-green">OPEN</span>
+          <h3 class="mt">Відповідь: SYN/ACK</h3>
+          <p class="mt">Сервіс живий і слухає порт. Nmap завершить або скине з'єднання і позначить порт відкритим.</p>
+        </div>
+        <div class="card amber">
+          <span class="tag t-amber">CLOSED</span>
+          <h3 class="mt">Відповідь: RST/ACK</h3>
+          <p class="mt"><b>Хост живий</b>, але на цьому порту ніхто не слухає. Це <b>активна відмова</b> — машина існує, і це вже інформація для атакуючого.</p>
+        </div>
+        <div class="card red">
+          <span class="tag t-red">FILTERED</span>
+          <h3 class="mt">Відповіді немає взагалі</h3>
+          <p class="mt">Фаєрвол мовчки дропнув пакет. Клієнт робить ретрансмісії і зрештою здається по таймауту. Іноді натомість приходить ICMP unreachable.</p>
+        </div>
+      </div>
+      <div class="note blue mt2">Практичний висновок для SOC: <b>RST/ACK у відповідь ≠ «нас захистили»</b>. Це означає, що хост відповідає — а отже, видимий для розвідки. Мовчазний дроп (DROP замість REJECT) розкриває атакуючому менше.</div>
+      <div class="note mt">У логах фаєрвола шукай патерн: <b>один src_ip → багато dst_port за короткий час</b> = сканування портів; <b>один dst_port → багато dst_ip</b> = пошук конкретного вразливого сервісу по мережі (напр. 445).</div>
+    </div>
+  </section>
+
+  <!-- 8 IP addressing -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker focus">Адресація · 06 · ФОКУС</span>
+      <h2>Приватні діапазони RFC 1918 — вивчити напам'ять</h2>
+      <div class="grid g3">
+        <div class="card blue">
+          <h3><code>10.0.0.0/8</code></h3>
+          <p class="mt">10.0.0.0 – 10.255.255.255<br>16,7 млн адрес. Великі корпоративні мережі.</p>
+        </div>
+        <div class="card blue">
+          <h3><code>172.16.0.0/12</code></h3>
+          <p class="mt">172.<b style="color:var(--amber)">16</b>.0.0 – 172.<b style="color:var(--amber)">31</b>.255.255<br>Тільки другий октет 16–31, не далі!</p>
+        </div>
+        <div class="card blue">
+          <h3><code>192.168.0.0/16</code></h3>
+          <p class="mt">192.168.0.0 – 192.168.255.255<br>Домашні й малі офісні мережі.</p>
+        </div>
+      </div>
+      <div class="note red mt2">Класичні пастки на іспиті: <code>11.0.0.1</code> — <b>публічна</b> (приватна лише 10.x). <code>172.32.1.1</code> — <b>публічна</b> (діапазон закінчується на 172.31). <code>192.169.1.1</code> — <b>публічна</b> (приватна лише 192.168).</div>
+      <h3 class="mt2">Чому це критично для аналітика</h3>
+      <div class="grid g2">
+        <div class="card">
+          <p>Дивлячись на алерт, ти миттєво маєш розуміти <b>напрямок трафіку</b>: приватна → публічна це вихід назовні (можливий C2 або ексфільтрація), публічна → приватна це вхід ззовні (можлива атака на периметр), приватна → приватна це внутрішній рух (можливий lateral movement).</p>
+        </div>
+        <div class="card violet">
+          <h3>Бонус: інші зарезервовані</h3>
+          <ul class="list mt">
+            <li><code>127.0.0.0/8</code> — loopback, сам хост</li>
+            <li><code>169.254.0.0/16</code> — APIPA, DHCP не спрацював</li>
+            <li><code>100.64.0.0/10</code> — CGNAT провайдерів</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 subnetting -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker focus">Адресація · 07 · ФОКУС</span>
+      <h2>Субнетинг і CIDR</h2>
+      <div class="note blue">Формула, яку треба знати рефлекторно: кількість хостів = <b>2<sup>(32 − префікс)</sup> − 2</b>. Мінус два — бо <b>перша адреса це сама мережа</b>, а <b>остання це broadcast</b>, і жодну з них не можна призначити пристрою.</div>
+      <div class="scroll-x mt">
+      <table class="tbl">
+        <tr><th>CIDR</th><th>Маска</th><th>Всього адрес</th><th>Хостів</th><th>Типове використання</th></tr>
+        <tr><td>/30</td><td class="dim">255.255.255.252</td><td class="dim">4</td><td>2</td><td class="dim">Лінк точка-точка між роутерами</td></tr>
+        <tr><td>/29</td><td class="dim">255.255.255.248</td><td class="dim">8</td><td>6</td><td class="dim">Мікросегмент</td></tr>
+        <tr><td>/28</td><td class="dim">255.255.255.240</td><td class="dim">16</td><td>14</td><td class="dim">Невелика DMZ</td></tr>
+        <tr><td>/27</td><td class="dim">255.255.255.224</td><td class="dim">32</td><td>30</td><td class="dim">Серверний сегмент</td></tr>
+        <tr><td>/26</td><td class="dim">255.255.255.192</td><td class="dim">64</td><td>62</td><td class="dim">Невеликий відділ</td></tr>
+        <tr><td>/25</td><td class="dim">255.255.255.128</td><td class="dim">128</td><td>126</td><td class="dim">Половина класичної підмережі</td></tr>
+        <tr><td><b style="color:var(--amber)">/24</b></td><td class="dim">255.255.255.0</td><td class="dim">256</td><td><b style="color:var(--amber)">254</b></td><td class="dim">Стандартна офісна підмережа</td></tr>
+        <tr><td>/23</td><td class="dim">255.255.254.0</td><td class="dim">512</td><td>510</td><td class="dim">Великий поверх / VLAN</td></tr>
+        <tr><td>/16</td><td class="dim">255.255.0.0</td><td class="dim">65 536</td><td>65 534</td><td class="dim">Кампус, велика корпорація</td></tr>
+        <tr><td>/8</td><td class="dim">255.0.0.0</td><td class="dim">16,7 млн</td><td>16 777 214</td><td class="dim">Весь приватний простір 10.x</td></tr>
+      </table>
+      </div>
+      <div class="grid g2 mt">
+        <div class="card">
+          <h3>Приклад читання</h3>
+          <p class="mt"><code>192.168.10.0/24</code> → мережа <code>192.168.10.0</code>, broadcast <code>192.168.10.255</code>, хости від <code>.1</code> до <code>.254</code>. Шлюз зазвичай <code>.1</code>.</p>
+        </div>
+        <div class="card green">
+          <h3>Навіщо це в SOC</h3>
+          <p class="mt">Щоб зі скану чи алерту одразу розуміти <b>масштаб</b>: сканування /24 це 254 цілі, і якщо атакуючий пройшовся по всій підмережі — це вже не випадковість, а розвідка.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 TTL -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker focus">Адресація · 08 · ФОКУС</span>
+      <h2>TTL — лічильник хопів, а не секунд</h2>
+      <div class="grid g2">
+        <div>
+          <div class="card amber">
+            <h3>Як працює</h3>
+            <p class="mt">У кожному IP-пакеті є поле <b>TTL (Time To Live)</b>. Кожен роутер на шляху зменшує його <b>на одиницю</b>. Коли TTL досягає <b>нуля</b> — пакет відкидається, а відправнику летить <b>ICMP Time Exceeded</b>.</p>
+            <p class="mt">Це захист від вічних петель маршрутизації: без TTL зациклений пакет ходив би по мережі назавжди.</p>
+          </div>
+          <div class="note blue mt">Поширена помилка — вважати TTL «часом життя сесії» в секундах. Ні: це <b>кількість переходів між роутерами</b>.</div>
+        </div>
+        <div>
+          <div class="card">
+            <h3>Traceroute побудований саме на цьому</h3>
+            <pre class="mt"><span class="c"># шле пакети з наростаючим TTL</span>
+TTL=<span class="n">1</span> → помирає на 1-му роутері → той відповідає
+TTL=<span class="n">2</span> → помирає на 2-му → відповідає
+TTL=<span class="n">3</span> → ... і так до цілі</pre>
+            <p class="mt">Так збирається список усіх вузлів на маршруті.</p>
+          </div>
+          <div class="card violet mt">
+            <h3>Форензичний бонус</h3>
+            <p class="mt">Початковий TTL натякає на ОС відправника: <b>64</b> — Linux/macOS, <b>128</b> — Windows, <b>255</b> — мережеве обладнання. Бачиш TTL 117 — імовірно Windows за 11 хопів від тебе.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 PORTS -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker focus">Адресація · 09 · ФОКУС</span>
+      <h2>Порти, які аналітик знає напам'ять</h2>
+      <div class="grid g2">
+        <div class="scroll-x">
+        <table class="tbl">
+          <tr><th>Порт</th><th>Сервіс</th><th>Ризик / нотатка</th></tr>
+          <tr><td>21</td><td>FTP</td><td class="dim">Пароль відкритим текстом</td></tr>
+          <tr><td>22</td><td>SSH</td><td class="dim">Брутфорс, ціль №1 ззовні</td></tr>
+          <tr><td>23</td><td>Telnet</td><td class="dim">Все відкритим текстом — має бути вимкнено</td></tr>
+          <tr><td>25</td><td>SMTP</td><td class="dim">Розсилка спаму, open relay</td></tr>
+          <tr><td>53</td><td>DNS</td><td class="dim">Тунелювання, ексфільтрація</td></tr>
+          <tr><td>67/68</td><td>DHCP</td><td class="dim">Rogue DHCP</td></tr>
+          <tr><td>80</td><td>HTTP</td><td class="dim">Без шифрування</td></tr>
+          <tr><td>88</td><td>Kerberos</td><td class="dim">Kerberoasting, AS-REP roasting</td></tr>
+          <tr><td>135</td><td>MSRPC</td><td class="dim">Віддалене виконання</td></tr>
+          <tr><td>137–139</td><td>NetBIOS</td><td class="dim">Застаріле, витік імен</td></tr>
+          <tr><td>161</td><td>SNMP</td><td class="dim">Дефолтні community-рядки</td></tr>
+        </table>
+        </div>
+        <div class="scroll-x">
+        <table class="tbl">
+          <tr><th>Порт</th><th>Сервіс</th><th>Ризик / нотатка</th></tr>
+          <tr><td>389</td><td>LDAP</td><td class="dim">Перелік об'єктів AD</td></tr>
+          <tr><td>443</td><td>HTTPS</td><td class="dim">C2 ховається саме тут</td></tr>
+          <tr><td style="color:var(--amber)">445</td><td><b style="color:var(--amber)">SMB</b></td><td class="dim"><b>EternalBlue, WannaCry, lateral movement</b></td></tr>
+          <tr><td>514</td><td>Syslog</td><td class="dim">Джерело логів для SIEM</td></tr>
+          <tr><td>636</td><td>LDAPS</td><td class="dim">LDAP через TLS</td></tr>
+          <tr><td>1433</td><td>MSSQL</td><td class="dim">Брутфорс, xp_cmdshell</td></tr>
+          <tr><td>3306</td><td>MySQL</td><td class="dim">Не має дивитись назовні</td></tr>
+          <tr><td style="color:var(--amber)">3389</td><td><b style="color:var(--amber)">RDP</b></td><td class="dim"><b>Брутфорс, вектор рансомварі №1</b></td></tr>
+          <tr><td>5432</td><td>PostgreSQL</td><td class="dim">Дефолтні креденшели</td></tr>
+          <tr><td>5985/6</td><td>WinRM</td><td class="dim">Віддалене керування, lateral movement</td></tr>
+          <tr><td>5900</td><td>VNC</td><td class="dim">Часто без пароля</td></tr>
+        </table>
+        </div>
+      </div>
+      <div class="note red mt">Абсолютний мінімум для співбесіди: <b>22 SSH · 25 SMTP · 53 DNS · 80 HTTP · 443 HTTPS · 445 SMB · 3389 RDP · 389 LDAP · 88 Kerberos</b>. Сканування 445 або 3389 по підмережі — майже завжди інцидент.</div>
+    </div>
+  </section>
+
+  <!-- 12 ARP -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Протоколи · 10</span>
+      <h2>ARP — міст між IP і MAC</h2>
+      <div class="grid g2">
+        <div>
+          <div class="card blue">
+            <h3>Що робить</h3>
+            <p class="mt">Щоб надіслати кадр у локальній мережі, хосту потрібна <b>MAC-адреса</b> отримувача, а він знає лише <b>IP</b>. ARP закриває цю прогалину: працює на <b>L2</b>, тільки в межах локального сегмента.</p>
+            <pre class="mt"><span class="c">// широкомовний запит на всю мережу</span>
+<span class="k">ARP Request</span>:  «Хто має 192.168.1.10?
+              відповідайте на aa:bb:cc:dd:ee:ff»
+<span class="k">ARP Reply</span>:    «Це я, мій MAC 11:22:33:44:55:66»</pre>
+            <p class="mt">Результат кешується: <code>arp -a</code> покаже таблицю.</p>
+          </div>
+        </div>
+        <div>
+          <div class="card red">
+            <h3>ARP spoofing / poisoning</h3>
+            <p class="mt">У протоколі <b>немає автентифікації</b> — приймається будь-яка відповідь. Атакуючий шле фальшиві ARP Reply: «шлюз 192.168.1.1 — це мій MAC». Трафік жертви починає йти через нього.</p>
+            <p class="mt">Це класичний <b>Man-in-the-Middle</b> у локальній мережі: перехоплення сесій, підміна даних, збір креденшелів.</p>
+          </div>
+          <div class="card green mt">
+            <h3>Як виявляти</h3>
+            <ul class="list g mt">
+              <li>Один MAC відповідає за <b>кілька різних IP</b></li>
+              <li>Раптова зміна MAC для IP шлюзу</li>
+              <li>Аномально багато ARP-трафіку (gratuitous ARP)</li>
+              <li>У Wireshark: <code>arp.duplicate-address-detected</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13 DHCP -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Протоколи · 11</span>
+      <h2>DHCP — автоматична видача адрес</h2>
+      <h3>Процес DORA</h3>
+      <div class="flow mt">
+        <div class="step"><span class="num">D</span><h3>Discover</h3><p>Клієнт кричить у broadcast: «є тут DHCP-сервер?»</p></div>
+        <div class="step"><span class="num">O</span><h3>Offer</h3><p>Сервер пропонує вільну IP-адресу і параметри.</p></div>
+        <div class="step"><span class="num">R</span><h3>Request</h3><p>Клієнт офіційно просить саме цю адресу.</p></div>
+        <div class="step"><span class="num">A</span><h3>Acknowledge</h3><p>Сервер підтверджує і фіксує оренду (lease).</p></div>
+      </div>
+      <div class="grid g2 mt2">
+        <div class="card">
+          <h3>Що видає сервер</h3>
+          <ul class="list mt">
+            <li>IP-адресу і маску підмережі</li>
+            <li>Шлюз за замовчуванням</li>
+            <li><b>DNS-сервери</b> — ось де ризик</li>
+            <li>Термін оренди (lease time)</li>
+          </ul>
+          <p class="mt">Порти: сервер <code>67/UDP</code>, клієнт <code>68/UDP</code>.</p>
+        </div>
+        <div class="card red">
+          <h3>Rogue DHCP — атака</h3>
+          <p class="mt">Атакуючий піднімає свій DHCP-сервер і відповідає швидше за легітимний. Видає жертвам <b>свій IP як шлюз і DNS</b> — і весь трафік мережі йде через нього. Знову MitM, але масштабніший за ARP spoofing.</p>
+          <p class="mt"><b>Захист:</b> DHCP snooping на свічах — дозволяє DHCP-відповіді лише з довірених портів.</p>
+        </div>
+      </div>
+      <div class="note blue mt">Для розслідування DHCP-логи безцінні: вони зв'язують <b>IP-адресу з MAC і часом</b>. Без них ти не доведеш, який саме пристрій мав цю IP о 10:04.</div>
+    </div>
+  </section>
+
+  <!-- 14 NAT -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Протоколи · 12</span>
+      <h2>NAT — трансляція адрес</h2>
+      <div class="grid g2">
+        <div class="card blue">
+          <h3>Навіщо</h3>
+          <p class="mt">Публічних IPv4-адрес не вистачає. NAT дозволяє сотням внутрішніх приватних адрес виходити в інтернет через <b>одну публічну</b>. Роутер підміняє адресу джерела і запам'ятовує відповідність у таблиці трансляцій.</p>
+          <pre class="mt">192.168.1.<span class="n">15</span>:52134  →  <span class="k">NAT</span>  →  203.0.113.<span class="n">7</span>:61001
+192.168.1.<span class="n">22</span>:49877  →  <span class="k">NAT</span>  →  203.0.113.<span class="n">7</span>:61002</pre>
+        </div>
+        <div>
+          <div class="card">
+            <h3>Види</h3>
+            <ul class="list mt">
+              <li><b>Static NAT</b> — одна приватна до однієї публічної</li>
+              <li><b>Dynamic NAT</b> — з пулу адрес</li>
+              <li><b>PAT / NAT overload</b> — багато до однієї через різні порти. Це те, що працює вдома й в офісі</li>
+            </ul>
+          </div>
+          <div class="card amber mt">
+            <h3>Проблема для розслідування</h3>
+            <p class="mt">Ззовні всі співробітники виглядають як <b>одна IP-адреса</b>. Щоб з'ясувати, хто саме звертався до шкідливого домену, потрібні <b>NAT-логи</b> з таймстемпами і портами — інакше слід обривається на периметрі.</p>
+          </div>
+        </div>
+      </div>
+      <div class="note green mt">Побічний ефект: NAT працює як примітивний фаєрвол — ззовні не можна ініціювати з'єднання до внутрішнього хоста, бо в таблиці трансляцій немає відповідного запису. Але це <b>не заміна фаєрволу</b>.</div>
+    </div>
+  </section>
+
+  <!-- 15 DNS -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Протоколи · 13</span>
+      <h2>DNS — телефонна книга інтернету</h2>
+      <div class="grid g2">
+        <div>
+          <h3>Шлях рекурсивного запиту</h3>
+          <div class="flow mt" style="flex-direction:column">
+            <div class="step"><span class="num">1</span><h3>Кеш</h3><p>Браузер → ОС → локальний резолвер. Часто відповідь уже тут.</p></div>
+            <div class="step"><span class="num">2</span><h3>Root-сервер</h3><p>«Не знаю example.com, спитай сервери зони .com»</p></div>
+            <div class="step"><span class="num">3</span><h3>TLD-сервер (.com)</h3><p>«Авторитетний сервер для example.com — ось цей»</p></div>
+            <div class="step"><span class="num">4</span><h3>Авторитетний сервер</h3><p>«example.com = 93.184.216.34» — відповідь кешується на час TTL</p></div>
+          </div>
+        </div>
+        <div>
+          <h3>Типи записів</h3>
+          <div class="scroll-x">
+          <table class="tbl">
+            <tr><th>Запис</th><th>Що містить</th></tr>
+            <tr><td>A</td><td class="dim">IPv4-адреса домену</td></tr>
+            <tr><td>AAAA</td><td class="dim">IPv6-адреса</td></tr>
+            <tr><td>CNAME</td><td class="dim">Псевдонім, що вказує на інший домен</td></tr>
+            <tr><td>MX</td><td class="dim">Поштовий сервер домену</td></tr>
+            <tr><td>NS</td><td class="dim">Авторитетні DNS-сервери зони</td></tr>
+            <tr><td>TXT</td><td class="dim">Текст: <b>SPF, DKIM, DMARC</b> — і канал ексфільтрації</td></tr>
+            <tr><td>PTR</td><td class="dim">Зворотний резолв: IP → ім'я</td></tr>
+            <tr><td>SOA</td><td class="dim">Службові параметри зони</td></tr>
+          </table>
+          </div>
+          <div class="note blue mt">Для фішинг-аналізу критичні <b>TXT-записи</b>: саме там живуть SPF і DMARC, які ти перевіряєш у заголовку <code>Authentication-Results</code>.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 DNS attacks -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Протоколи · 14</span>
+      <h2>DNS в атаках — найнедооцінене джерело</h2>
+      <div class="grid g2">
+        <div class="card red">
+          <span class="tag t-red">ТУНЕЛЮВАННЯ</span>
+          <h3 class="mt">DNS tunneling</h3>
+          <p class="mt">Дані ховають у піддоменах: <code>ZXhmaWx0cmF0ZWQ.evil.com</code>. DNS майже ніколи не блокують, тому це надійний канал ексфільтрації та C2.</p>
+          <p class="mt"><b>Ознаки:</b> аномально довгі імена, багато унікальних піддоменів одного домену, високий обсяг TXT-запитів, запити без подальших з'єднань.</p>
+        </div>
+        <div class="card violet">
+          <span class="tag t-violet">DGA</span>
+          <h3 class="mt">Domain Generation Algorithm</h3>
+          <p class="mt">Малваре щодня генерує сотні псевдовипадкових доменів (<code>kqxwmz3f9a.net</code>) і пробує їх по черзі, доки не знайде живий C2. Блокувати по списку марно.</p>
+          <p class="mt"><b>Ознаки:</b> сплеск <b>NXDOMAIN</b>-відповідей з одного хоста, домени з високою ентропією імені.</p>
+        </div>
+        <div class="card amber">
+          <span class="tag t-amber">FAST FLUX</span>
+          <h3 class="mt">Швидка зміна IP</h3>
+          <p class="mt">Один домен постійно міняє A-записи з дуже низьким TTL, ховаючи реальну інфраструктуру за ботнетом проксі.</p>
+          <p class="mt"><b>Ознаки:</b> TTL у кілька секунд, десятки різних IP з різних країн за короткий час.</p>
+        </div>
+        <div class="card">
+          <span class="tag t-cyan">ІНШЕ</span>
+          <h3 class="mt">Отруєння і підміна</h3>
+          <ul class="list mt">
+            <li><b>Cache poisoning</b> — підсунути фальшиву відповідь у кеш резолвера</li>
+            <li><b>Typosquatting</b> — <code>gooogle.com</code>, <code>privatbnk.ua</code></li>
+            <li><b>Newly registered domains</b> — домен, зареєстрований учора, у фішингу майже завжди</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note green mt">Правило SOC: <b>DNS-логи — перше, куди дивишся</b>, коли треба зрозуміти, з ким спілкувався заражений хост. Вони фіксують намір навіть тоді, коли саме з'єднання не відбулося.</div>
+    </div>
+  </section>
+
+  <!-- 17 URL journey -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker focus">Веб · 15 · ФОКУС</span>
+      <h2>Що відбувається, коли ти вводиш URL</h2>
+      <p class="lead">Питання-фільтр номер один на джуніорських співбесідах. Скелет: <b>кеш → DNS → TCP → TLS → HTTP → рендер</b>.</p>
+      <div class="flow mt2">
+        <div class="step" style="border-color:rgba(94,168,255,.35)">
+          <span class="num">КРОК 1</span><h3>Перевірка кешу</h3>
+          <p>Браузер дивиться свій кеш, потім кеш ОС, файл <code>hosts</code>, далі кеш резолвера. Якщо адреса є — DNS пропускається.</p>
+        </div>
+        <div class="step" style="border-color:rgba(63,208,212,.35)">
+          <span class="num">КРОК 2</span><h3>DNS-резолв</h3>
+          <p>Запит по <code>UDP/53</code> до резолвера, рекурсивно до авторитетного сервера. Отримуємо IP.</p>
+        </div>
+        <div class="step" style="border-color:rgba(74,222,128,.35)">
+          <span class="num">КРОК 3</span><h3>TCP-з'єднання</h3>
+          <p>Three-way handshake на порт <code>443</code>: SYN → SYN/ACK → ACK.</p>
+        </div>
+        <div class="step" style="border-color:rgba(251,191,36,.35)">
+          <span class="num">КРОК 4</span><h3>TLS handshake</h3>
+          <p>Узгодження версії й шифрів, сервер надсилає сертифікат, браузер його перевіряє, узгоджується сеансовий ключ.</p>
+        </div>
+        <div class="step" style="border-color:rgba(192,132,252,.35)">
+          <span class="num">КРОК 5</span><h3>HTTP-запит</h3>
+          <p><code>GET / HTTP/1.1</code> з заголовками. Сервер відповідає статусом і HTML-кодом.</p>
+        </div>
+        <div class="step" style="border-color:rgba(251,113,133,.35)">
+          <span class="num">КРОК 6</span><h3>Рендеринг</h3>
+          <p>Браузер парсить HTML, довантажує CSS, JS, зображення окремими запитами, будує DOM і малює сторінку.</p>
+        </div>
+      </div>
+      <div class="note blue mt2">Сильна відповідь згадує <b>усі протоколи поіменно</b>: DNS (UDP/53), TCP (443), TLS, HTTP. Якщо в URL стоїть <code>https</code> — крок з TLS обов'язковий, його пропуск одразу помітний інтерв'юеру.</div>
+    </div>
+  </section>
+
+  <!-- 18 TLS -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker focus">Веб · 16 · ФОКУС</span>
+      <h2>TLS: чому браузер вірить сертифікату</h2>
+      <div class="grid g2">
+        <div>
+          <div class="card">
+            <h3>Ланцюжок довіри</h3>
+            <pre class="mt"><span class="k">Root CA</span>            <span class="c">// вшитий у браузер/ОС</span>
+   └─ підписує
+<span class="k">Intermediate CA</span>
+   └─ підписує
+<span class="k">Сертифікат google.com</span>  <span class="c">// leaf</span></pre>
+            <p class="mt">У браузері з коробки є список <b>довірених кореневих CA</b> з їхніми публічними ключами. Браузер перевіряє підпис сертифіката ключем CA і йде вгору по ланцюжку до відомого кореня.</p>
+          </div>
+          <div class="note green mt">Аналогія: ти довіряєш паспорту незнайомця не тому, що знаєш його, а тому, що документ видала держава, якій ти довіряєш, і має захисні елементи, які ти вмієш перевірити.</div>
+        </div>
+        <div>
+          <div class="card blue">
+            <h3>Що саме перевіряється</h3>
+            <ul class="list mt">
+              <li><b>Підпис</b> — і ланцюжок веде до довіреного кореня</li>
+              <li><b>Домен</b> у полі SAN збігається з тим, куди ти йдеш</li>
+              <li><b>Термін дії</b> не минув і вже почався</li>
+              <li><b>Не відкликаний</b> — перевірка через CRL/OCSP</li>
+            </ul>
+          </div>
+          <div class="card amber mt">
+            <h3>Гібридне шифрування</h3>
+            <p class="mt"><b>Асиметрика</b> (повільна, але безпечна) використовується лише щоб узгодити сеансовий ключ. Далі весь трафік іде <b>симетричним</b> шифром (швидким). Найкраще з обох світів.</p>
+          </div>
+          <div class="card red mt">
+            <h3>Для SOC</h3>
+            <p class="mt">Self-signed сертифікат на внутрішньому сервері — рутина. Self-signed на зовнішньому з'єднанні або <b>сертифікат, виданий учора для домену-одноденки</b> — привід копати. Малваре часто ховає C2 за TLS: дивись на <b>JA3-відбиток</b> і аномальні cipher suites.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 19 devices -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Інструменти · 17</span>
+      <h2>Мережеві пристрої та засоби захисту</h2>
+      <div class="grid g3">
+        <div class="card">
+          <span class="tag t-cyan">L2</span><h3 class="mt">Switch</h3>
+          <p class="mt">Комутує кадри всередині сегмента за <b>MAC-адресами</b>. Тримає MAC-таблицю. Підтримує VLAN — логічне розділення мережі.</p>
+        </div>
+        <div class="card">
+          <span class="tag t-blue">L3</span><h3 class="mt">Router</h3>
+          <p class="mt">Маршрутизує пакети <b>між мережами</b> за IP-адресами, спираючись на таблицю маршрутизації. Зменшує TTL на кожному переході.</p>
+        </div>
+        <div class="card">
+          <span class="tag t-green">L3–L7</span><h3 class="mt">Firewall</h3>
+          <p class="mt">Фільтрує трафік за правилами. <b>Stateful</b> відстежує стан з'єднань. <b>NGFW</b> бачить застосунки й вміє DPI.</p>
+        </div>
+        <div class="card">
+          <span class="tag t-violet">L7</span><h3 class="mt">Proxy</h3>
+          <p class="mt">Посередник для вебтрафіку: фільтрує URL, кешує, <b>логує кожен запит</b>. Найцінніше джерело для розслідування «хто клікнув на фішинг».</p>
+        </div>
+        <div class="card amber">
+          <span class="tag t-amber">ПАСИВНО</span><h3 class="mt">IDS</h3>
+          <p class="mt">Стоїть <b>поза потоком</b> (на span-порту), аналізує копію трафіку і <b>лише сигналізує</b>. Не блокує, тому не ламає легітимний трафік.</p>
+        </div>
+        <div class="card red">
+          <span class="tag t-red">В РОЗРИВ</span><h3 class="mt">IPS</h3>
+          <p class="mt">Стоїть <b>у розриві</b> (inline), трафік іде крізь нього — тому може <b>заблокувати</b> атаку. Ціна: false positive ріже робочий трафік.</p>
+        </div>
+      </div>
+      <div class="note blue mt2">Різницю <b>IDS vs IPS</b> питають майже завжди. Формула відповіді: «IDS — камера спостереження, бачить і кричить; IPS — охоронець у дверях, бачить і не пускає. Ціна IPS — ризик заблокувати своїх». Snort і Suricata вміють працювати в обох режимах.</div>
+    </div>
+  </section>
+
+  <!-- 20 wireshark -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Інструменти · 18</span>
+      <h2>Wireshark — фільтри, які рятують час</h2>
+      <div class="grid g2">
+        <div>
+          <h3>Display-фільтри (базові)</h3>
+          <pre class="mt"><span class="c"># за адресою і портом</span>
+ip.addr == <span class="n">10.0.0.5</span>
+ip.src == <span class="n">10.0.0.5</span> && ip.dst == <span class="n">8.8.8.8</span>
+tcp.port == <span class="n">445</span>
+udp.port == <span class="n">53</span>
+
+<span class="c"># за протоколом</span>
+http || dns || smb2
+tls.handshake.type == <span class="n">1</span>   <span class="c"># ClientHello</span></pre>
+          <h3 class="mt2">Полювання</h3>
+          <pre class="mt"><span class="c"># лише SYN без ACK = сканування портів</span>
+tcp.flags.syn==<span class="n">1</span> && tcp.flags.ack==<span class="n">0</span>
+
+<span class="c"># скиди з'єднань</span>
+tcp.flags.reset == <span class="n">1</span>
+
+<span class="c"># POST-запити — часто ексфільтрація</span>
+http.request.method == <span class="s">"POST"</span>
+
+<span class="c"># підозрілий домен у DNS</span>
+dns.qry.name contains <span class="s">"evil"</span>
+
+<span class="c"># паролі у відкритому тексті</span>
+frame contains <span class="s">"password"</span></pre>
+        </div>
+        <div>
+          <div class="card green">
+            <h3>Робочий процес аналітика</h3>
+            <ul class="list g mt">
+              <li><b>Statistics → Conversations</b> — хто з ким і скільки говорив. Найбільші сесії — перші підозрювані</li>
+              <li><b>Statistics → Protocol Hierarchy</b> — що взагалі є в дампі, які протоколи аномально представлені</li>
+              <li><b>Follow → TCP Stream</b> — прочитати діалог цілком, як текст</li>
+              <li><b>File → Export Objects → HTTP</b> — витягти передані файли з трафіку</li>
+              <li><b>Statistics → IO Graph</b> — побачити регулярність (beaconing видно очима)</li>
+            </ul>
+          </div>
+          <div class="note amber mt">Порада для іспиту: не намагайся читати дамп підряд. Спершу <b>Conversations</b> і <b>Protocol Hierarchy</b>, щоб звузити коло, і тільки потім занурюйся в конкретні пакети.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21 tcpdump + nmap -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Інструменти · 19</span>
+      <h2>tcpdump і Nmap</h2>
+      <div class="grid g2">
+        <div>
+          <h3>tcpdump — коли немає GUI</h3>
+          <pre class="mt"><span class="c"># писати дамп у файл (потім відкриєш у Wireshark)</span>
+tcpdump -i eth0 -nn -w capture.pcap
+
+<span class="c"># -nn = не резолвити імена й порти</span>
+tcpdump -nn host <span class="n">10.0.0.5</span>
+tcpdump -nn port <span class="n">445</span>
+tcpdump -nn src <span class="n">10.0.0.5</span> and dst port <span class="n">443</span>
+
+<span class="c"># лише SYN-пакети (пошук сканування)</span>
+tcpdump -nn <span class="s">'tcp[tcpflags] & tcp-syn != 0'</span>
+
+<span class="c"># читати збережений файл</span>
+tcpdump -nn -r capture.pcap</pre>
+          <div class="note blue mt">На бойовому сервері <b>завжди</b> пиши <code>-w file.pcap</code>: спершу зібрав, потім аналізуй окремо. Аналіз наживо втрачає пакети.</div>
+        </div>
+        <div>
+          <h3>Nmap — розвідка (і те, що ти бачиш у логах)</h3>
+          <pre class="mt"><span class="c"># швидкий SYN-скан топ-портів</span>
+nmap -sS <span class="n">10.0.0.0/24</span>
+
+<span class="c"># версії сервісів + ОС</span>
+nmap -sV -O <span class="n">10.0.0.5</span>
+
+<span class="c"># усі 65535 портів</span>
+nmap -p- <span class="n">10.0.0.5</span>
+
+<span class="c"># скрипти виявлення вразливостей</span>
+nmap --script vuln <span class="n">10.0.0.5</span></pre>
+          <div class="card red mt">
+            <h3>Погляд синьої команди</h3>
+            <p class="mt">Тобі не треба сканувати — тобі треба <b>впізнавати скан у логах</b>. Ознаки: один src_ip звертається до <b>десятків портів</b> одного хоста за секунди, або до <b>одного порту багатьох хостів</b>. У фаєрволі це стіна записів deny з однієї адреси.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 22 detection -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">SOC-практика · 20</span>
+      <h2>Як атаки виглядають у мережевому трафіку</h2>
+      <div class="scroll-x">
+      <table class="tbl">
+        <tr><th>Активність</th><th>Мережевий слід</th><th>Де шукати</th></tr>
+        <tr><td>Сканування портів</td><td>Один src_ip → багато dst_port; шквал SYN без завершених сесій; багато RST у відповідь</td><td class="dim">Фаєрвол, IDS, NetFlow</td></tr>
+        <tr><td>Брутфорс</td><td>Багато невдалих автентифікацій з однієї IP на порти 22, 3389, 445, 389</td><td class="dim">Логи ОС + фаєрвол</td></tr>
+        <tr><td style="color:var(--amber)">C2 beaconing</td><td><b>Регулярний інтервал</b> (кожні 60 с), стабільно малий розмір, тривалість годинами, рідкісний домен призначення</td><td class="dim">Проксі, NetFlow, EDR</td></tr>
+        <tr><td>Ексфільтрація</td><td>Великий <b>вихідний</b> обсяг, неробочий час, нетипові протоколи, сплеск DNS TXT або HTTP POST</td><td class="dim">Проксі, DNS, DLP</td></tr>
+        <tr><td>Lateral movement</td><td>Робоча станція звертається до інших станцій по <b>445, 3389, 5985</b> — те, чого їй робити не треба</td><td class="dim">Внутрішній трафік, EDR</td></tr>
+        <tr><td>DNS-тунелювання</td><td>Довгі випадкові піддомени, багато унікальних запитів до одного домену, високий обсяг TXT</td><td class="dim">DNS-логи</td></tr>
+        <tr><td>DGA-малваре</td><td>Сплеск <b>NXDOMAIN</b> з одного хоста, домени з високою ентропією</td><td class="dim">DNS-логи</td></tr>
+        <tr><td>MitM у LAN</td><td>Один MAC на кілька IP, раптова зміна MAC шлюзу, шквал gratuitous ARP</td><td class="dim">Свічі, IDS</td></tr>
+      </table>
+      </div>
+      <div class="note green mt">Головна ідея: <b>шукай не «поганий пакет», а аномальний патерн</b>. C2 видає себе не вмістом (він зашифрований), а <b>ритмом</b>: людина не ходить на сайт рівно кожні 60 секунд протягом восьми годин.</div>
+    </div>
+  </section>
+
+  <!-- 23 log sources -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">SOC-практика · 21</span>
+      <h2>Мережеві джерела логів для SIEM</h2>
+      <div class="grid g3">
+        <div class="card blue">
+          <h3>Фаєрвол / VPN</h3>
+          <p class="mt">Хто заходить ззовні, які з'єднання дозволено й заблоковано. Периметр — перше, що підключають.</p>
+          <p class="mt"><span class="tag t-blue">Дає</span> src/dst IP, порти, action, обсяг</p>
+        </div>
+        <div class="card violet">
+          <h3>Проксі</h3>
+          <p class="mt">Кожен вебзапит користувача з URL, User-Agent, обсягом і вердиктом категорії.</p>
+          <p class="mt"><span class="tag t-violet">Дає</span> відповідь «хто клікнув на фішинг»</p>
+        </div>
+        <div class="card green">
+          <h3>DNS</h3>
+          <p class="mt">Кожен резолв домену з хоста. Фіксує намір навіть без успішного з'єднання.</p>
+          <p class="mt"><span class="tag t-green">Дає</span> C2, тунелі, DGA, typosquatting</p>
+        </div>
+        <div class="card amber">
+          <h3>NetFlow / IPFIX</h3>
+          <p class="mt">Метадані з'єднань без вмісту: хто, з ким, скільки, як довго. Дешево зберігати.</p>
+          <p class="mt"><span class="tag t-amber">Дає</span> beaconing, ексфільтрацію, lateral</p>
+        </div>
+        <div class="card red">
+          <h3>IDS / IPS</h3>
+          <p class="mt">Спрацювання сигнатур Snort/Suricata на відомі експлойти й патерни малваре.</p>
+          <p class="mt"><span class="tag t-red">Дає</span> готові алерти з контекстом</p>
+        </div>
+        <div class="card">
+          <h3>DHCP</h3>
+          <p class="mt">Зв'язка IP ↔ MAC ↔ час. Без неї IP-адреса в логах не вказує на конкретний пристрій.</p>
+          <p class="mt"><span class="tag t-cyan">Дає</span> атрибуцію пристрою</p>
+        </div>
+      </div>
+      <div class="note blue mt2">Питання зі співбесіди «які 5 джерел підключиш першими до SIEM з обмеженим бюджетом»: <b>контролер домену</b> (автентифікація), <b>поштовий шлюз</b> (вектор №1), <b>EDR</b> (де атака приземляється), <b>фаєрвол/VPN</b> (периметр), <b>проксі/DNS</b> (кліки і C2). Логіка відповіді: покрити <b>весь ланцюжок атаки</b>, а не один її рівень.</div>
+    </div>
+  </section>
+
+  <!-- 24 cheat sheet -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker focus">Шпаргалка · 22</span>
+      <h2>Мінімум, який має бути в голові</h2>
+      <div class="grid g2">
+        <div class="card amber">
+          <h3>Числа</h3>
+          <ul class="list a mt">
+            <li>Приватні: <code>10/8</code> · <code>172.16–31</code> · <code>192.168/16</code></li>
+            <li>/24 = 256 адрес, <b>254 хости</b> (мінус мережа й broadcast)</li>
+            <li>Хости = 2<sup>(32−префікс)</sup> − 2</li>
+            <li>TTL: 64 Linux · 128 Windows · 255 мережеве</li>
+            <li>Порти: 22 · 25 · 53 · 80 · 443 · <b>445</b> · <b>3389</b> · 389 · 88</li>
+          </ul>
+        </div>
+        <div class="card blue">
+          <h3>Послідовності</h3>
+          <ul class="list mt">
+            <li>Handshake: <b>SYN → SYN/ACK → ACK</b></li>
+            <li>Розрив: FIN → ACK → FIN → ACK</li>
+            <li>DHCP: <b>D</b>iscover → <b>O</b>ffer → <b>R</b>equest → <b>A</b>ck</li>
+            <li>URL: кеш → DNS → TCP → TLS → HTTP → рендер</li>
+            <li>DNS: кеш → root → TLD → авторитетний</li>
+          </ul>
+        </div>
+        <div class="card green">
+          <h3>Розрізняти без вагань</h3>
+          <ul class="list g mt">
+            <li><b>RST/ACK</b> = closed (хост живий) · <b>тиша</b> = filtered</li>
+            <li><b>IDS</b> пасивно сигналізує · <b>IPS</b> inline блокує</li>
+            <li><b>TCP</b> надійність · <b>UDP</b> швидкість</li>
+            <li><b>ARP</b> IP→MAC (L2) · <b>DNS</b> ім'я→IP (L7)</li>
+            <li><b>Хешування</b> незворотне · <b>шифрування</b> зворотне</li>
+          </ul>
+        </div>
+        <div class="card violet">
+          <h3>Формулювання для співбесіди</h3>
+          <ul class="list mt">
+            <li>Завжди називай <b>протокол і порт</b>, не просто «запит»</li>
+            <li>Прив'язуй до <b>MITRE ATT&CK</b>, якщо доречно</li>
+            <li>Відповідь = <b>що бачу → що це означає → що роблю</b></li>
+            <li>Не обривай на першому кроці — розгортай ланцюжок</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 25 plan -->
+  <section class="slide">
+    <div class="inner">
+      <span class="kicker">Далі · 23</span>
+      <h2>План повторення на 3 тижні</h2>
+      <div class="grid g3">
+        <div class="card blue">
+          <span class="tag t-blue">ТИЖДЕНЬ 1</span>
+          <h3 class="mt">Теорія та числа</h3>
+          <ul class="list mt">
+            <li>TryHackMe: <b>Networking Concepts</b>, <b>Networking Essentials</b> — повторно</li>
+            <li>Приватні діапазони й таблиця CIDR — до автоматизму</li>
+            <li>Порти: 15 хвилин щодня на картки (Anki або аркуш)</li>
+            <li>Проговорити вголос шлях запиту від URL до сторінки</li>
+          </ul>
+        </div>
+        <div class="card green">
+          <span class="tag t-green">ТИЖДЕНЬ 2</span>
+          <h3 class="mt">Протоколи та практика</h3>
+          <ul class="list g mt">
+            <li>TryHackMe: <b>Networking Core Protocols</b>, <b>Secure Protocols</b></li>
+            <li><b>Wireshark: The Basics</b> — пройти ще раз, самому крутити фільтри</li>
+            <li>Зняти власний дамп: відкрити сайт і знайти в ньому DNS, handshake, TLS</li>
+            <li>Субнетинг: 10 задач на день на будь-якому онлайн-тренажері</li>
+          </ul>
+        </div>
+        <div class="card amber">
+          <span class="tag t-amber">ТИЖДЕНЬ 3</span>
+          <h3 class="mt">Бойове застосування</h3>
+          <ul class="list a mt">
+            <li>TryHackMe: <b>Wireshark: Packet Operations</b>, <b>Traffic Analysis Essentials</b></li>
+            <li><b>Nmap: The Basics</b> — зрозуміти open/closed/filtered руками</li>
+            <li>Розібрати 2–3 pcap з інцидентами і <b>написати по них звіт</b></li>
+            <li>Самоперевірка: повернутись до цієї презентації і відповісти на все вголос</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note green mt2">Дві звички, які дадуть найбільший приріст: <b>30–40 хвилин щодня</b> замість марафонів на вихідних, і <b>проговорювання відповідей уголос</b> повними реченнями — саме коротка відповідь, а не брак знань, коштує балів на SAL1 і на співбесіді.</div>
+      <div class="note blue mt">Після цих трьох тижнів мережі перестануть бути слабким місцем — і профіль вирівняється під рівень решти твоїх доменів.</div>
+    </div>
+  </section>
+
+</div>
+
+<div class="hint" id="hint">свайп ← → між слайдами · вниз усередині слайда</div>
+
+<div class="hud">
+  <div class="dots" id="dots"></div>
+  <div class="navbtns">
+    <span class="counter" id="counter"><b>1</b>/25</span>
+    <button class="nb" id="prev" aria-label="Назад">←</button>
+    <button class="nb" id="next" aria-label="Вперед">→</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+  var dotsBox = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var bar = document.getElementById('bar');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var cur = 0;
+
+  slides.forEach(function(s,i){
+    var b = document.createElement('button');
+    b.className = 'dot' + (i===0?' on':'');
+    b.setAttribute('aria-label','Слайд ' + (i+1));
+    b.addEventListener('click', function(){ go(i); });
+    dotsBox.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(i){
+    i = Math.max(0, Math.min(slides.length-1, i));
+    deck.scrollTo({ left: i * deck.clientWidth, behavior:'smooth' });
+  }
+
+  function sync(){
+    var i = Math.round(deck.scrollLeft / deck.clientWidth);
+    if(i === cur) { paint(); return; }
+    cur = i; paint();
+  }
+
+  function paint(){
+    dots.forEach(function(d,i){ d.classList.toggle('on', i===cur); });
+    counter.innerHTML = '<b>'+(cur+1)+'</b>/'+slides.length;
+    bar.style.width = ((cur+1)/slides.length*100) + '%';
+    prev.disabled = cur===0;
+    next.disabled = cur===slides.length-1;
+    var active = dots[cur];
+    if(active && active.scrollIntoView) active.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
+  }
+
+  var tick;
+  deck.addEventListener('scroll', function(){
+    clearTimeout(tick);
+    tick = setTimeout(sync, 60);
+  }, {passive:true});
+
+  prev.addEventListener('click', function(){ go(cur-1); });
+  next.addEventListener('click', function(){ go(cur+1); });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight' || e.key==='PageDown'){ e.preventDefault(); go(cur+1); }
+    if(e.key==='ArrowLeft'  || e.key==='PageUp'){ e.preventDefault(); go(cur-1); }
+    if(e.key==='Home'){ e.preventDefault(); go(0); }
+    if(e.key==='End'){ e.preventDefault(); go(slides.length-1); }
+  });
+
+  window.addEventListener('resize', function(){
+    deck.scrollLeft = cur * deck.clientWidth;
+  });
+
+  paint();
+})();
+</script>
+
+</body>
+</html>
